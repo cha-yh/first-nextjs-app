@@ -4,6 +4,16 @@ import Head from 'next/head'
 import Date from '../../components/date'
 import utilStyles from '../../styles/utils.module.css'
 import { GetStaticProps, GetStaticPaths } from 'next'
+import { useQuery, gql } from '@apollo/client';
+
+const GET_LAUNCHES = gql`
+  query GetLaunches {
+    launches {
+      id
+      mission_name
+    }
+  }
+`;
 
 export default function Post({
   postData
@@ -14,6 +24,16 @@ export default function Post({
     contentHtml: string
   }
 }) {
+
+  const { loading, error, data } = useQuery<{launches: {id: number, mission_name: string}[]}>(GET_LAUNCHES);
+  
+  if (error) {
+    console.log('error', error);
+    return <p></p>;
+  }
+  if(data) {
+    console.log('data', data);
+  }
   return (
     <Layout>
       <Head>
@@ -25,6 +45,19 @@ export default function Post({
           <Date dateString={postData.date} />
         </div>
         <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
+      </article>
+      <article>
+        {loading && <p>Loading...</p>}
+        {error && <p>Error :(</p>}
+        {data &&
+          <ul>
+            {data.launches.map(launch => {
+              return (
+                <li>{launch.mission_name}</li>
+              )
+            })}
+          </ul>
+        }
       </article>
     </Layout>
   )
