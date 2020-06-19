@@ -19,6 +19,10 @@ export default function Home({ allPostsData }) {
     <Layout home>
       <Head>
         <title>{siteTitle}</title>
+        <meta
+          name="description"
+          content={`c2c platform is developing new pages!`}
+        />
       </Head>
       <section className={utilStyles.headingMd}>
         <p>[Your Self Introduction]</p>
